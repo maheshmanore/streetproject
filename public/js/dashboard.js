@@ -16,15 +16,37 @@ async function fetchPoles() {
   }
 }
 
-// Call fetchPoles when the page loads
-document.addEventListener('DOMContentLoaded', fetchPoles);
+document.addEventListener('DOMContentLoaded', async () => {
+  await fetchPoles(); // Fetch and display poles
+  requestNotificationPermission(); // Request notification permission
+});
+
+// Function to request notification permission
+function requestNotificationPermission() {
+  if ('Notification' in window && Notification.permission !== 'granted') {
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        console.log('Notification permission granted');
+      }
+    });
+  }
+}
 
 // Listen for 'poleUpdate' events from the Socket.IO server and update the list
 socket.on('poleUpdate', (updatedPole) => {
   const index = allPoles.findIndex(pole => pole.poleId === updatedPole.poleId);
   if (index !== -1) {
+    const oldStatus = allPoles[index].status; // Get the old status
     allPoles[index] = updatedPole;
     filterPoles('all');
+
+    // Check if the updated pole's status has changed
+    if (oldStatus !== updatedPole.status) {
+      // Display Chrome push notification
+      const notificationTitle = updatedPole.status === 'active' ? 'Pole Activated' : 'Pole Deactivated';
+      const notificationBody = `Pole ID ${updatedPole.poleId} has become ${updatedPole.status}.`;
+      displayNotification(notificationTitle, { body: notificationBody });
+    }
   }
 });
 
@@ -58,4 +80,22 @@ function searchGeolocation(geolocation) {
 
   // Open the Google Maps URL in a new tab
   window.open(mapsUrl, '_blank');
+}
+
+
+function displayNotification(title, options) {
+  if (!('Notification' in window)) {
+    console.error('This browser does not support desktop notification');
+    return;
+  }
+
+  if (Notification.permission === 'granted') {
+    new Notification(title, options);
+  } else if (Notification.permission !== 'denied') {
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        new Notification(title, options);
+      }
+    });
+  }
 }
