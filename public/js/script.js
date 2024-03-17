@@ -2,9 +2,11 @@
 document.addEventListener('DOMContentLoaded',async () => {
     const registerForm = document.querySelector('#register-form');
     const loginForm = document.querySelector('#login-form');
+    
+    const submitButton = document.getElementById('submitButton');
   
     if (registerForm) {
-      registerForm.addEventListener('submit', async (event) => {
+      submitButton.addEventListener('click', async (event) => {
         event.preventDefault();
         const formData = new FormData(registerForm);
         const username = formData.get('username');
@@ -25,7 +27,7 @@ document.addEventListener('DOMContentLoaded',async () => {
     }
   
     if (loginForm) {
-      loginForm.addEventListener('submit', async (event) => {
+      submitButton.addEventListener('click', async (event) => {
         event.preventDefault();
         const formData = new FormData(loginForm);
         const username = formData.get('username');

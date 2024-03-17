@@ -70,14 +70,14 @@ router.put('/update/:id/:status', async (req, res) => {
       const [lat, lng] = pole.geolocation.split(',').map(parseFloat);
       const mapsUrl = `https://maps.google.com?q=${lat},${lng}`;
 
-      // client.messages
-      // .create({
-      //   body: `Pole ID: ${updatedPole.poleId} - Location: ${updatedPole.geolocation} - Status: ${updatedPole.status} - View location: ${mapsUrl}`,
-      //   from: twilioPhoneNumber,
-      //   to: '+918329321333' // Replace with recipient's phone number
-      // })
-      // .then(message => console.log(`SMS sent with SID: ${message.sid}`))
-      // .catch(error => console.error('Error sending SMS:', error));
+      client.messages
+      .create({
+        body: `Pole ID: ${updatedPole.poleId} - Location: ${updatedPole.geolocation} - Status: ${updatedPole.status} - View location: ${mapsUrl}`,
+        from: twilioPhoneNumber,
+        to: '+918329321333' // Replace with recipient's phone number
+      })
+      .then(message => console.log(`SMS sent with SID: ${message.sid}`))
+      .catch(error => console.error('Error sending SMS:', error));
 
       const mailOptions = {
         from: {
