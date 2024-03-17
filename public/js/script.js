@@ -45,35 +45,10 @@ document.addEventListener('DOMContentLoaded',async () => {
       });
     }
 
-    try {
-        const response = await fetch('/check-auth');
-        if (response.ok) {
-          // User is authenticated
-          const currentPath = window.location.pathname;
-          if (currentPath === '/') {
-            // Redirect to dashboard if the user is on the root URL
-            window.location.href = '/dashboard';
-          }
-          // Add more conditions for other views that require authentication
-          // For example:
-          // else if (currentPath === '/profile') {
-          //   window.location.href = '/profile';
-          // }
     
-          // Remove the login page from history to prevent navigation back to it
-          history.replaceState({}, '', '/dashboard');
-        } else {
-          // User is not authenticated
-          const currentPath = window.location.pathname;
-          if (currentPath !== '/') {
-            // Redirect to login page if the user is not on the root URL
-            window.location.href = '/';
-          }
-        }
-      } catch (error) {
-        console.error('Error checking authentication:', error);
-      }
-    });
+    
+  
+  });
   
 
   

@@ -7,7 +7,7 @@ const User = require('../models/User');
 
 
 router.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/views/index.html'));
+    res.sendFile(path.join(__dirname, '../public/views/home.html'));
   });
 
 
