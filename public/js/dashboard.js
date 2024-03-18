@@ -17,8 +17,10 @@ async function fetchPoles() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  await fetchPoles(); // Fetch and display poles
-  requestNotificationPermission(); // Request notification permission
+  await fetchPoles();
+  fetchSystemStatus(); // Fetch and display poles
+  requestNotificationPermission();
+   // Request notification permission
 });
 
 // Function to request notification permission
@@ -97,5 +99,57 @@ function displayNotification(title, options) {
         new Notification(title, options);
       }
     });
+  }
+}
+
+// Function to toggle the system status
+async function fetchSystemStatus() {
+  try {
+    const response = await fetch('/system/checksystem');
+    const data = await response.json();
+     // Log the current system status
+    updateToggleButton(data.status); // Update the toggle button label based on the status
+  } catch (err) {
+    console.error('Error fetching system status:', err);
+  }
+}
+
+// Function to update the toggle button label based on the system status
+function updateToggleButton(status) {
+  const toggleButton = document.getElementById('systemToggle');
+  toggleButton.textContent = status === 'active' ? 'System Is On' : 'System Is Off';
+  toggleButton.classList.toggle('system-on', status === 'active');
+  toggleButton.classList.toggle('system-off', status === 'inactive');
+}
+
+// Function to toggle the system status
+async function toggleSystem() {
+  try {
+    const response = await fetch('/system/checksystem');
+    const data = await response.json();
+
+    if (data.status === 'active') {
+      await fetch('/system/status', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: 'inactive' })
+      });
+      updateToggleButton('inactive'); // Update the toggle button label directly
+      console.log('System toggled to Off');
+    } else if (data.status === 'inactive') {
+      await fetch('/system/status', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: 'active' })
+      });
+      updateToggleButton('active'); // Update the toggle button label directly
+      console.log('System toggled to On');
+    }
+  } catch (err) {
+    console.error('Error toggling system:', err);
   }
 }

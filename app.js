@@ -40,6 +40,7 @@ const checkAuthentication = (req, res, next) => {
 
 const authRoutes = require('./routes/authroutes');
 const dashboardRoutes = require('./routes/dashboardroutes');
+const statusroute = require('./routes/statusroute');
 
 // Middleware
 app.use(express.static(path.join(__dirname, 'public')));
@@ -57,6 +58,7 @@ app.use('/poles', (req, res, next) => {
   router(req, res, next); // Call the router with the modified request object
 });
 app.use('/dashboard', checkAuthentication, dashboardRoutes);
+app.use('/system', statusroute);
 
 
 
